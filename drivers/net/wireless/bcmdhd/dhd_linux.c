@@ -3386,7 +3386,9 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 	dhd->pend_ipaddr = 0;
 	register_inetaddr_notifier(&dhd_notifier);
 #endif /* ARP_OFFLOAD_SUPPORT */
+#ifdef IPV6
 	register_inet6addr_notifier(&dhd_notifier_ipv6);
+#endif
 
 #ifdef DHDTCPACK_SUPPRESS
 	dhd->pub.tcp_ack_info_cnt = 0;
@@ -4610,7 +4612,9 @@ void dhd_detach(dhd_pub_t *dhdp)
 #ifdef ARP_OFFLOAD_SUPPORT
 	unregister_inetaddr_notifier(&dhd_notifier);
 #endif /* ARP_OFFLOAD_SUPPORT */
+#ifdef IPV6
 	unregister_inet6addr_notifier(&dhd_notifier_ipv6);
+#endif
 
 	dhd->pub.up = 0;
 	if (!(dhd->dhd_state & DHD_ATTACH_STATE_DONE)) {
@@ -5527,7 +5531,7 @@ dhd_dev_pno_stop_for_ssid(struct net_device *dev)
 
 /* Linux wrapper to call common dhd_pno_set_for_ssid */
 int
-dhd_dev_pno_set_for_ssid(struct net_device *dev, wlc_ssid_t* ssids_local, int nssid,
+dhd_dev_pno_set_for_ssid(struct net_device *dev, wlc_ssid_ext_t* ssids_local, int nssid,
 	uint16  scan_fr, int pno_repeat, int pno_freq_expo_max, uint16 *channel_list, int nchan)
 {
 	dhd_info_t *dhd = *(dhd_info_t **)netdev_priv(dev);
